@@ -1,14 +1,17 @@
 package cmd
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"strings"
+	"sync"
 
-	"github.com/SzymonMielecki/ksiazki/types"
+	"github.com/SzymonMielecki/ksiazki/client/types"
+	"github.com/SzymonMielecki/ksiazki/client/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -27,29 +30,28 @@ func getUrl() (string, error) {
 
 	
 	if title != "" {
-		return url + "books/" + strings.ToLower(strings.ReplaceAll(title, " ", "-")) +  "/", nil
+		return url + "books/" + strings.ToLower(strings.ReplaceAll(utils.ReplacePolishChars(title), " ", "-")) +  "/", nil
 	}
 	if author != "" {
-		url = url + "authors/" + strings.ToLower(strings.ReplaceAll(author, " ", "-")) +  "/"
+		url = url + "authors/" + strings.ToLower(strings.ReplaceAll(utils.ReplacePolishChars(author), " ", "-")) +  "/"
 	}
 	if genre != "" {
-		url = url + "genres/" + strings.ToLower(strings.ReplaceAll(genre, " ", "-")) +  "/"
+		url = url + "genres/" + strings.ToLower(strings.ReplaceAll(utils.ReplacePolishChars(genre), " ", "-")) +  "/"
 	}
 	return url+ "books", nil
 }
 
 var rootCmd = &cobra.Command{
-	Use:   "air_qual",
+	Use:   "ksiazki",
 	Short: "Check air quality in your area",
-	Long:  ``,
+	Args: cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		url, err := getUrl()
+		fmt.Println(url)
 		if err != nil {
 			fmt.Println("Error: ", err)
 			return
 		}
-
-		fmt.Println("URL: ", url)
 
 		resp, err := http.Get(url)
 		if err != nil {
@@ -63,34 +65,51 @@ var rootCmd = &cobra.Command{
 			fmt.Println("Error: ", err)
 			return
 		}
-		books := new([]types.Book)
-		err = json.Unmarshal(body,books )
+		// fmt.Println( string(body))
+		booksPre := new([]types.BookPre)
+		err = json.Unmarshal(body,booksPre)
 		if err != nil {
-			fmt.Println("Error: ", err)
-			return
+			book := new(types.BookPre)
+			err = json.Unmarshal(body, book)
+			if err != nil {
+				fmt.Println("Error: ", err)
+				return
+			}
+			*booksPre = append(*booksPre, *book)
 		}
-		for book := range *books {
-			fmt.Println("Title: ", (*books)[book].Title)
-			fmt.Println("Author: ", (*books)[book].Author)
-			fmt.Println("Genre: ", (*books)[book].Genre)
-			fmt.Println("Href: ", (*books)[book].Href)
-			fmt.Println()
+		
+		books := new([]types.Book)
+		for _, bookPre := range *booksPre {
+			*books = append(*books, *bookPre.ToBook())
 		}
 
-		// port := os.Getenv("PORT")
-		// if port == "" {
-		// 	port = ":8080"
-		// }
-		//
-		//
-		//
-		// contentType := "application/json"
-		//
-		// if _, err = http.Post(url_weather, contentType, bytes.NewBuffer(body)); err != nil {
-		// 	fmt.Println("Error: ", err)
-		// 	return
-		// }
-		// fmt.Println("Data sent to server")
+
+		backend := os.Getenv("BACKEND")
+		if backend == "" {
+			backend = "http://localhost:8080/books"
+		}
+		var wg sync.WaitGroup
+		
+		for _, book := range *books {
+			wg.Add(1)
+			go func(book types.Book) {
+				defer wg.Done()
+				body, err := json.Marshal(book)
+				if err != nil {
+					fmt.Println("Error: ", err)
+					return 
+				}
+				res, err := http.Post(backend, "application/json",bytes.NewBuffer(body))
+				if err != nil {	
+					fmt.Println("Error: ", err)
+					return
+				}
+				_ = res
+				fmt.Println("Sent book: " + book.Author + " - \""+ book.Title+ "\" to server with status:"+ fmt.Sprint(res.StatusCode))
+			}(book)
+		}
+		wg.Wait()
+		fmt.Println("All data sent to server")
 	},
 }
 
