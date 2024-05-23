@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"net/http"
 
 	"github.com/SzymonMielecki/ksiazki/server/endpoint"
@@ -13,17 +13,12 @@ import (
 
 func main() {
 	e := echo.New()
+	db, err := handleDbConnection()
 	
-	db,err := persistance.NewDB(
-		"localhost",
-		"postgres",
-		"ksiazkiPass",
-		"postgres",
-		"5432",
-	)
 	if err != nil {
-		log.Fatal(err)
+		e.Logger.Fatal(err)
 	}
+	
 	a := logic.NewAppState(db)
 
 	e.Use(middleware.Logger())
@@ -38,7 +33,29 @@ func main() {
 	e.POST("/drop", endpoint.Drop(a))
 
 
-	httpPort := "8080"
+	e.Logger.Fatal(e.Start(":8080"))
+}
 
-	e.Logger.Fatal(e.Start("localhost:" + httpPort))
+func handleDbConnection() (*persistance.DB, error) {
+	db,err := persistance.NewDB(
+		"db",
+		"postgres",
+		"ksiazkiPass",
+		"postgres",
+		"5432",
+	)
+	if err == nil {
+		return db, nil
+	}
+	db,err = persistance.NewDB(
+		"localhost",
+		"postgres",
+		"ksiazkiPass",
+		"postgres",
+		"5432",
+	)
+	if err == nil {
+		return db, nil
+	}
+	return nil, fmt.Errorf("could not connect to database")
 }

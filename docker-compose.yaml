@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+    db:
+        image: postgres
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: ksiazkiPass
+        ports:
+            - "5432:5432"
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+    backend:
+        restart: always
+        build:
+            context: ./server
+            dockerfile: Dockerfile
+        ports:
+            - "8080:8080"
+        environment:
+            POSTGRES_PASSWORD: ksiazkiPass
+volumes:
+    pgdata:

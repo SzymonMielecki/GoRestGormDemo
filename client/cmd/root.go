@@ -43,7 +43,6 @@ func getUrl() (string, error) {
 
 var rootCmd = &cobra.Command{
 	Use:   "ksiazki",
-	Short: "Check air quality in your area",
 	Args: cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		url, err := getUrl()
