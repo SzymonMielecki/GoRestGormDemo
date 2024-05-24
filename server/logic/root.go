@@ -2,7 +2,7 @@ package logic
 
 import (
 	"github.com/SzymonMielecki/ksiazki/server/persistance"
-	"github.com/SzymonMielecki/ksiazki/server/types"
+	"github.com/SzymonMielecki/ksiazki/types"
 )
 
 
@@ -41,4 +41,24 @@ func (a *AppState) CreateBook(book *types.Book) error {
 
 func (a *AppState) Drop() error {
 	return a.db.Drop()
+}
+
+func (a *AppState) FilterByAuthor(books []types.Book, author string) []types.Book {
+	filteredBooks := []types.Book{}
+	for _, book := range books {
+		if book.Author == author {
+			filteredBooks = append(filteredBooks, book)
+		}
+	}
+	return filteredBooks
+}
+
+func (a *AppState) FilterByGenre(books []types.Book, genre string) []types.Book {
+	filteredBooks := []types.Book{}
+	for _, book := range books {
+		if book.Genre == genre {
+			filteredBooks = append(filteredBooks, book)
+		}
+	}
+	return filteredBooks
 }

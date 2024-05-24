@@ -3,7 +3,7 @@ package persistance
 import (
 	"fmt"
 
-	"github.com/SzymonMielecki/ksiazki/server/types"
+	"github.com/SzymonMielecki/ksiazki/types"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

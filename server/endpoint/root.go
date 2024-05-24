@@ -4,16 +4,24 @@ import (
 	"net/http"
 
 	"github.com/SzymonMielecki/ksiazki/server/logic"
-	"github.com/SzymonMielecki/ksiazki/server/types"
+	"github.com/SzymonMielecki/ksiazki/types"
 	"github.com/labstack/echo/v4"
 )
 
 
 func GetBooks(a *logic.AppState) echo.HandlerFunc {
 	return func(c echo.Context) error {
+		author := c.QueryParam("author")
+		genre := c.QueryParam("genre")
 		books, err := a.GetBooks()
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, err)
+		}
+		if author != "" {
+			books = a.FilterByAuthor(books, author)
+		}
+		if genre != "" {
+			books = a.FilterByGenre(books, genre)
 		}
 		return c.JSON(http.StatusOK, books)
 	}

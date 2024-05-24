@@ -10,8 +10,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/SzymonMielecki/ksiazki/client/types"
 	"github.com/SzymonMielecki/ksiazki/client/utils"
+	"github.com/SzymonMielecki/ksiazki/types"
 	"github.com/spf13/cobra"
 )
 
