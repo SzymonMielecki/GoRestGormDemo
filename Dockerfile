@@ -17,4 +17,4 @@ COPY --from=builder /app/server/wait-for-postgres.sh /wait-for-postgres.sh
 
 RUN chmod +x /wait-for-postgres.sh
 
-CMD ["/bin/sh", "-c", "/wait-for-postgres.sh db && /docker-server-ksiazki"]
+CMD ["/bin/sh", "-c", "/wait-for-postgres.sh db /docker-server-ksiazki"]
