@@ -3,11 +3,10 @@ package endpoint
 import (
 	"net/http"
 
-	"github.com/SzymonMielecki/ksiazki/server/logic"
-	"github.com/SzymonMielecki/ksiazki/types"
+	"github.com/SzymonMielecki/GoDockerPsqlProject/server/logic"
+	"github.com/SzymonMielecki/GoDockerPsqlProject/types"
 	"github.com/labstack/echo/v4"
 )
-
 
 func GetBooks(a *logic.AppState) echo.HandlerFunc {
 	return func(c echo.Context) error {
@@ -25,10 +24,10 @@ func GetBooks(a *logic.AppState) echo.HandlerFunc {
 		}
 		return c.JSON(http.StatusOK, books)
 	}
-	
+
 }
 
-func GetBook(a *logic.AppState) echo.HandlerFunc{
+func GetBook(a *logic.AppState) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		id := c.Param("id")
 		book, err := a.GetBook(id)
@@ -39,9 +38,9 @@ func GetBook(a *logic.AppState) echo.HandlerFunc{
 	}
 }
 
-func CreateBook(a *logic.AppState) echo.HandlerFunc{
+func CreateBook(a *logic.AppState) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		book := new(types.Book) 
+		book := new(types.Book)
 		if err := c.Bind(book); err != nil {
 			return c.JSON(http.StatusBadRequest, err)
 		}

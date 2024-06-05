@@ -1,4 +1,4 @@
-module github.com/SzymonMielecki/ksiazki/types
+module 	github.com/SzymonMielecki/GoDockerPsqlProject/types
 
 go 1.22.0
 

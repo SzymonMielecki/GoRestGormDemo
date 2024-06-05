@@ -1,11 +1,11 @@
-module github.com/SzymonMielecki/ksiazki/server
+module 	github.com/SzymonMielecki/GoDockerPsqlProject/server
 
 go 1.22.0
 
-replace github.com/SzymonMielecki/ksiazki/types => ../types
+replace 	github.com/SzymonMielecki/GoDockerPsqlProject/types => ../types
 
 require (
-	github.com/SzymonMielecki/ksiazki/types v0.0.0
+		github.com/SzymonMielecki/GoDockerPsqlProject/types v0.0.0
 	github.com/labstack/echo/v4 v4.12.0
 	gorm.io/driver/postgres v1.5.7
 	gorm.io/gorm v1.25.10

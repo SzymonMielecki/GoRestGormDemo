@@ -3,7 +3,7 @@ package persistance
 import (
 	"fmt"
 
-	"github.com/SzymonMielecki/ksiazki/types"
+	"github.com/SzymonMielecki/GoDockerPsqlProject/types"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -12,9 +12,8 @@ type DB struct {
 	*gorm.DB
 }
 
-
 func NewDB(host, user, password, dbname, port string) (*DB, error) {
-	dsn := "host="+host+" user="+user+" password="+password+" dbname="+dbname+" port="+port +" sslmode=disable TimeZone=Europe/Warsaw"
+	dsn := "host=" + host + " user=" + user + " password=" + password + " dbname=" + dbname + " port=" + port + " sslmode=disable TimeZone=Europe/Warsaw"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, err
@@ -47,7 +46,7 @@ func (db DB) CreateBook(book *types.Book) error {
 	author := db.GetOrCreateAuthor(book.Author)
 	genre := db.GetOrCreateGenre(book.Genre)
 	bookModel := types.NewBookModel(book, author, genre)
-	
+
 	if err := db.Create(&bookModel).Error; err != nil {
 		fmt.Println("failed to create book: ", err)
 		return err
@@ -89,7 +88,7 @@ func (db DB) Drop() error {
 		return err
 	}
 	if err := db.AutoMigrate(&types.BookModel{}, &types.AuthorModel{}, &types.GenreModel{}); err != nil {
-		return  err
+		return err
 	}
 	return nil
 }

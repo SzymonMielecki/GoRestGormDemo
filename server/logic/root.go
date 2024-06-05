@@ -1,10 +1,9 @@
 package logic
 
 import (
-	"github.com/SzymonMielecki/ksiazki/server/persistance"
-	"github.com/SzymonMielecki/ksiazki/types"
+	"github.com/SzymonMielecki/GoDockerPsqlProject/server/persistance"
+	"github.com/SzymonMielecki/GoDockerPsqlProject/types"
 )
-
 
 type AppState struct {
 	db *persistance.DB

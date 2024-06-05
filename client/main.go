@@ -1,6 +1,6 @@
 package main
 
-import "github.com/SzymonMielecki/ksiazki/client/cmd"
+import "github.com/SzymonMielecki/GoDockerPsqlProject/client/cmd"
 
 func main() {
 	cmd.Connect()

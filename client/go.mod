@@ -1,11 +1,11 @@
-module github.com/SzymonMielecki/ksiazki/client
+module 	github.com/SzymonMielecki/GoDockerPsqlProject/client
 
 go 1.22.0
 
-replace github.com/SzymonMielecki/ksiazki/types => ../types
+replace 	github.com/SzymonMielecki/GoDockerPsqlProject/types => ../types
 
 require (
-	github.com/SzymonMielecki/ksiazki/types v0.0.0
+		github.com/SzymonMielecki/GoDockerPsqlProject/types v0.0.0
 	github.com/spf13/cobra v1.8.0
 )
 

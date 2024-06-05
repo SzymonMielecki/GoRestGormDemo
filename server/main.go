@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/SzymonMielecki/ksiazki/server/endpoint"
-	"github.com/SzymonMielecki/ksiazki/server/logic"
-	"github.com/SzymonMielecki/ksiazki/server/persistance"
+	"github.com/SzymonMielecki/GoDockerPsqlProject/server/endpoint"
+	"github.com/SzymonMielecki/GoDockerPsqlProject/server/logic"
+	"github.com/SzymonMielecki/GoDockerPsqlProject/server/persistance"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -14,11 +14,11 @@ import (
 func main() {
 	e := echo.New()
 	db, err := handleDbConnection()
-	
+
 	if err != nil {
 		e.Logger.Fatal(err)
 	}
-	
+
 	a := logic.NewAppState(db)
 
 	e.Use(middleware.Logger())
@@ -32,12 +32,11 @@ func main() {
 	e.POST("/books", endpoint.CreateBook(a))
 	e.POST("/drop", endpoint.Drop(a))
 
-
 	e.Logger.Fatal(e.Start("0.0.0.0:8080"))
 }
 
 func handleDbConnection() (*persistance.DB, error) {
-	db,err := persistance.NewDB(
+	db, err := persistance.NewDB(
 		"db",
 		"postgres",
 		"ksiazkiPass",
@@ -47,7 +46,7 @@ func handleDbConnection() (*persistance.DB, error) {
 	if err == nil {
 		return db, nil
 	}
-	db,err = persistance.NewDB(
+	db, err = persistance.NewDB(
 		"localhost",
 		"postgres",
 		"ksiazkiPass",

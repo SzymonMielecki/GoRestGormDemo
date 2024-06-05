@@ -10,17 +10,16 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/SzymonMielecki/ksiazki/client/utils"
-	"github.com/SzymonMielecki/ksiazki/types"
+	"github.com/SzymonMielecki/GoDockerPsqlProject/client/utils"
+	"github.com/SzymonMielecki/GoDockerPsqlProject/types"
 	"github.com/spf13/cobra"
 )
 
 var (
-	title string
+	title  string
 	author string
-	genre string
+	genre  string
 )
-
 
 func getUrl() (string, error) {
 	url := "https://wolnelektury.pl/api/"
@@ -28,21 +27,20 @@ func getUrl() (string, error) {
 		return "", fmt.Errorf("you must provide at least one of the following flags: title, author, genre")
 	}
 
-	
 	if title != "" {
-		return url + "books/" + strings.ToLower(strings.ReplaceAll(utils.ReplacePolishChars(title), " ", "-")) +  "/", nil
+		return url + "books/" + strings.ToLower(strings.ReplaceAll(utils.ReplacePolishChars(title), " ", "-")) + "/", nil
 	}
 	if author != "" {
-		url = url + "authors/" + strings.ToLower(strings.ReplaceAll(utils.ReplacePolishChars(author), " ", "-")) +  "/"
+		url = url + "authors/" + strings.ToLower(strings.ReplaceAll(utils.ReplacePolishChars(author), " ", "-")) + "/"
 	}
 	if genre != "" {
-		url = url + "genres/" + strings.ToLower(strings.ReplaceAll(utils.ReplacePolishChars(genre), " ", "-")) +  "/"
+		url = url + "genres/" + strings.ToLower(strings.ReplaceAll(utils.ReplacePolishChars(genre), " ", "-")) + "/"
 	}
-	return url+ "books", nil
+	return url + "books", nil
 }
 
 var rootCmd = &cobra.Command{
-	Use:   "ksiazki",
+	Use:  "ksiazki",
 	Args: cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		url, err := getUrl()
@@ -66,7 +64,7 @@ var rootCmd = &cobra.Command{
 		}
 		// fmt.Println( string(body))
 		booksPre := new([]types.BookPre)
-		err = json.Unmarshal(body,booksPre)
+		err = json.Unmarshal(body, booksPre)
 		if err != nil {
 			book := new(types.BookPre)
 			err = json.Unmarshal(body, book)
@@ -76,19 +74,18 @@ var rootCmd = &cobra.Command{
 			}
 			*booksPre = append(*booksPre, *book)
 		}
-		
+
 		books := new([]types.Book)
 		for _, bookPre := range *booksPre {
 			*books = append(*books, *bookPre.ToBook())
 		}
-
 
 		backend := os.Getenv("BACKEND")
 		if backend == "" {
 			backend = "http://localhost:8080/books"
 		}
 		var wg sync.WaitGroup
-		
+
 		for _, book := range *books {
 			wg.Add(1)
 			go func(book types.Book) {
@@ -96,15 +93,15 @@ var rootCmd = &cobra.Command{
 				body, err := json.Marshal(book)
 				if err != nil {
 					fmt.Println("Error: ", err)
-					return 
+					return
 				}
-				res, err := http.Post(backend, "application/json",bytes.NewBuffer(body))
-				if err != nil {	
+				res, err := http.Post(backend, "application/json", bytes.NewBuffer(body))
+				if err != nil {
 					fmt.Println("Error: ", err)
 					return
 				}
 				_ = res
-				fmt.Println("Sent book: " + book.Author + " - \""+ book.Title+ "\" to server with status:"+ fmt.Sprint(res.StatusCode))
+				fmt.Println("Sent book: " + book.Author + " - \"" + book.Title + "\" to server with status:" + fmt.Sprint(res.StatusCode))
 			}(book)
 		}
 		wg.Wait()
