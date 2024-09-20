@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/SzymonMielecki/GoDockerPsqlProject/server/endpoint"
-	"github.com/SzymonMielecki/GoDockerPsqlProject/server/logic"
-	"github.com/SzymonMielecki/GoDockerPsqlProject/server/persistance"
+	"github.com/SzymonMielecki/GoRestGormDemo/server/endpoint"
+	"github.com/SzymonMielecki/GoRestGormDemo/server/logic"
+	"github.com/SzymonMielecki/GoRestGormDemo/server/persistance"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )

@@ -3,7 +3,7 @@ package persistance
 import (
 	"fmt"
 
-	"github.com/SzymonMielecki/GoDockerPsqlProject/types"
+	"github.com/SzymonMielecki/GoRestGormDemo/types"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

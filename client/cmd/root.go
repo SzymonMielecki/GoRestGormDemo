@@ -7,11 +7,10 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"strings"
 	"sync"
 
-	"github.com/SzymonMielecki/GoDockerPsqlProject/client/utils"
-	"github.com/SzymonMielecki/GoDockerPsqlProject/types"
+	"github.com/SzymonMielecki/GoRestGormDemo/client/utils"
+	"github.com/SzymonMielecki/GoRestGormDemo/types"
 	"github.com/spf13/cobra"
 )
 
@@ -21,29 +20,13 @@ var (
 	genre  string
 )
 
-func getUrl() (string, error) {
-	url := "https://wolnelektury.pl/api/"
-	if title == "" && author == "" && genre == "" {
-		return "", fmt.Errorf("you must provide at least one of the following flags: title, author, genre")
-	}
-
-	if title != "" {
-		return url + "books/" + strings.ToLower(strings.ReplaceAll(utils.ReplacePolishChars(title), " ", "-")) + "/", nil
-	}
-	if author != "" {
-		url = url + "authors/" + strings.ToLower(strings.ReplaceAll(utils.ReplacePolishChars(author), " ", "-")) + "/"
-	}
-	if genre != "" {
-		url = url + "genres/" + strings.ToLower(strings.ReplaceAll(utils.ReplacePolishChars(genre), " ", "-")) + "/"
-	}
-	return url + "books", nil
-}
-
 var rootCmd = &cobra.Command{
-	Use:  "ksiazki",
-	Args: cobra.NoArgs,
+	Use:   "librarian",
+	Short: "Librarian is a CLI for managing books",
+	Long:  "Librarian is a CLI for managing books",
+	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
-		url, err := getUrl()
+		url, err := utils.GetUrl(title, author, genre)
 		fmt.Println(url)
 		if err != nil {
 			fmt.Println("Error: ", err)
@@ -62,7 +45,6 @@ var rootCmd = &cobra.Command{
 			fmt.Println("Error: ", err)
 			return
 		}
-		// fmt.Println( string(body))
 		booksPre := new([]types.BookPre)
 		err = json.Unmarshal(body, booksPre)
 		if err != nil {

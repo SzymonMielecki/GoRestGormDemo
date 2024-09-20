@@ -3,8 +3,8 @@ package endpoint
 import (
 	"net/http"
 
-	"github.com/SzymonMielecki/GoDockerPsqlProject/server/logic"
-	"github.com/SzymonMielecki/GoDockerPsqlProject/types"
+	"github.com/SzymonMielecki/GoRestGormDemo/server/logic"
+	"github.com/SzymonMielecki/GoRestGormDemo/types"
 	"github.com/labstack/echo/v4"
 )
 

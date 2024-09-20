@@ -6,10 +6,19 @@ services:
         restart: always
         environment:
             POSTGRES_PASSWORD: ksiazkiPass
+            POSTGRES_USER: postgres
+            POSTGRES_DB: postgres
         ports:
             - "5432:5432"
         volumes:
             - pgdata:/var/lib/postgresql/data
+        healthcheck:
+            test: ["CMD", "pg_isready", "-d", "postgres", "-U", "postgres"]
+            interval: 1s
+            timeout: 5s
+            retries: 5
+            start_period: 1s
+
     backend:
         restart: always
         build:
@@ -18,6 +27,12 @@ services:
         ports:
             - "8080:8080"
         environment:
-            POSTGRES_PASSWORD: ksiazkiPass
+            DB_HOST: db
+            DB_PORT: 5432
+            DB_USER: postgres
+            DB_PASSWORD: ksiazkiPass
+            DB_NAME: postgres
+        depends_on:
+            db: service_healthy
 volumes:
     pgdata:

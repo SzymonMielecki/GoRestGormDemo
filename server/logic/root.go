@@ -1,8 +1,8 @@
 package logic
 
 import (
-	"github.com/SzymonMielecki/GoDockerPsqlProject/server/persistance"
-	"github.com/SzymonMielecki/GoDockerPsqlProject/types"
+	"github.com/SzymonMielecki/GoRestGormDemo/server/persistance"
+	"github.com/SzymonMielecki/GoRestGormDemo/types"
 )
 
 type AppState struct {
