@@ -3,7 +3,6 @@ version: "3.8"
 services:
     db:
         image: postgres
-        restart: always
         environment:
             POSTGRES_PASSWORD: ksiazkiPass
             POSTGRES_USER: postgres
@@ -20,7 +19,6 @@ services:
             start_period: 1s
 
     backend:
-        restart: always
         build:
             context: .
             dockerfile: Dockerfile
